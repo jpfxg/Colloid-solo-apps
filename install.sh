@@ -38,7 +38,6 @@ cat << EOF
 EOF
 }
 
-# Modificar la función install() para solo copiar iconos de aplicaciones
 install() {
   local dest=${1}
   local name=${2}
@@ -57,92 +56,27 @@ install() {
   sed -i "s/Colloid/${2}${3}${4}${5}/g" "${THEME_DIR}"/index.theme
 
   if [[ "${color}" == '-Light' ]]; then
-    cp -r "${SRC_DIR}"/src/apps "${THEME_DIR}"
+    # Copiar solo iconos de aplicaciones
+    cp -r "${SRC_DIR}"/src/{apps,categories,places,mimetypes} "${THEME_DIR}"
 
-    # Omitir la copia de iconos del sistema
-    # if [[ "${theme}" == '' && "${scheme}" == '' && "${notint}" == 'true' ]]; then
-    #   cp -r "${SRC_DIR}"/notint/*.svg "${THEME_DIR}"/places/scalable
-    # fi
-
-    colors_folder
-
-    # Omitir la actualización de colores para iconos del sistema
-    # if [[ "${scheme}" != '' || "${theme}" != '' ]]; then
-    #   cp -r "${SRC_DIR}"/notint/*.svg "${THEME_DIR}"/places/scalable
-    #   sed -i "s/#60c0f0/${theme_color}/g" "${THEME_DIR}"/places/scalable/*.svg
-    #   sed -i "s/#60c0f0/${theme_color}/g" "${THEME_DIR}"/apps/scalable/*.svg
-    # fi
-
-    cp -r "${SRC_DIR}"/links/* "${THEME_DIR}"
+    # Excluir carpetas no deseadas
+    rm -rf "${THEME_DIR}"/{actions,devices,status,emblems,symbolic}
   fi
 
   if [[ "${color}" == '-Dark' ]]; then
-    mkdir -p "${THEME_DIR}"/apps
-    cp -r "${SRC_DIR}"/src/apps/{22,symbolic} "${THEME_DIR}"/apps
+    mkdir -p "${THEME_DIR}"/{apps,categories,places,mimetypes}
+    cp -r "${SRC_DIR}"/src/apps/22 "${THEME_DIR}"/apps
+    cp -r "${SRC_DIR}"/src/categories/22 "${THEME_DIR}"/categories
+    cp -r "${SRC_DIR}"/src/places/16 "${THEME_DIR}"/places
+    cp -r "${SRC_DIR}"/src/mimetypes/scalable "${THEME_DIR}"/mimetypes
 
-    # Omitir la copia de iconos del sistema
-    # cp -r "${SRC_DIR}"/src/devices/{16,22,24,32,symbolic} "${THEME_DIR}"/devices
-    # cp -r "${SRC_DIR}"/src/places/{16,22,24,symbolic} "${THEME_DIR}"/places
-    # cp -r "${SRC_DIR}"/src/status/{16,22,24,symbolic} "${THEME_DIR}"/status
-
-    # Omitir la actualización de colores para iconos del sistema
-    # sed -i "s/#363636/#dedede/g" "${THEME_DIR}"/{actions,devices,places,status}/{16,22,24}/*.svg
-    # sed -i "s/#363636/#dedede/g" "${THEME_DIR}"/{actions,devices}/32/*.svg
-    # sed -i "s/#363636/#dedede/g" "${THEME_DIR}"/apps/22/*.svg
-    # sed -i "s/#363636/#dedede/g" "${THEME_DIR}"/categories/22/*.svg
-    # sed -i "s/#363636/#dedede/g" "${THEME_DIR}"/{actions,apps,categories,devices,emblems,mimetypes,places,status}/symbolic/*.svg
-
-    # Omitir la copia de iconos del sistema
-    # cp -r "${SRC_DIR}"/links/actions/{16,22,24,32,symbolic} "${THEME_DIR}"/actions
-    # cp -r "${SRC_DIR}"/links/devices/{16,22,24,32,symbolic} "${THEME_DIR}"/devices
-    # cp -r "${SRC_DIR}"/links/places/{16,22,24,symbolic} "${THEME_DIR}"/places
-    # cp -r "${SRC_DIR}"/links/status/{16,22,24,symbolic} "${THEME_DIR}"/status
-    # cp -r "${SRC_DIR}"/links/apps/{22,symbolic} "${THEME_DIR}"/apps
-    # cp -r "${SRC_DIR}"/links/categories/{22,symbolic} "${THEME_DIR}"/categories
-    # cp -r "${SRC_DIR}"/links/mimetypes/symbolic "${THEME_DIR}"/mimetypes
-
-    cd "${dest}"
-    # Omitir la creación de enlaces simbólicos para iconos del sistema
-    # ln -sf ../../"${name}${theme}${scheme}"-Light/apps/scalable "${name}${theme}${scheme}"-Dark/apps/scalable
-    # ln -sf ../../"${name}${theme}${scheme}"-Light/devices/scalable "${name}${theme}${scheme}"-Dark/devices/scalable
-    # ln -sf ../../"${name}${theme}${scheme}"-Light/places/scalable "${name}${theme}${scheme}"-Dark/places/scalable
-    # ln -sf ../../"${name}${theme}${scheme}"-Light/categories/32 "${name}${theme}${scheme}"-Dark/categories/32
-    # ln -sf ../../"${name}${theme}${scheme}"-Light/emblems/16 "${name}${theme}${scheme}"-Dark/emblems/16
-    # ln -sf ../../"${name}${theme}${scheme}"-Light/emblems/22 "${name}${theme}${scheme}"-Dark/emblems/22
-    # ln -sf ../../"${name}${theme}${scheme}"-Light/status/32 "${name}${theme}${scheme}"-Dark/status/32
-    # ln -sf ../../"${name}${theme}${scheme}"-Light/mimetypes/scalable "${name}${theme}${scheme}"-Dark/mimetypes/scalable
+    # Excluir carpetas no deseadas
+    rm -rf "${THEME_DIR}"/{actions,devices,status,emblems,symbolic}
   fi
-
-  if [[ "${color}" == '' ]]; then
-    cd ${dest}
-    ln -sf ../"${name}${theme}${scheme}"-Light/apps "${name}${theme}${scheme}"/apps
-    # Omitir la creación de enlaces simbólicos para iconos del sistema
-    # ln -sf ../"${name}${theme}${scheme}"-Light/actions "${name}${theme}${scheme}"/actions
-    # ln -sf ../"${name}${theme}${scheme}"-Light/devices "${name}${theme}${scheme}"/devices
-    # ln -sf ../"${name}${theme}${scheme}"-Light/emblems "${name}${theme}${scheme}"/emblems
-    # ln -sf ../"${name}${theme}${scheme}"-Light/places "${name}${theme}${scheme}"/places
-    # ln -sf ../"${name}${theme}${scheme}"-Light/categories "${name}${theme}${scheme}"/categories
-    # ln -sf ../"${name}${theme}${scheme}"-Light/mimetypes "${name}${theme}${scheme}"/mimetypes
-    # ln -sf ../"${name}${theme}${scheme}"-Dark/status "${name}${theme}${scheme}"/status
-  fi
-
-  (
-    cd "${THEME_DIR}"
-    ln -sf actions actions@2x
-    ln -sf apps apps@2x
-    # Omitir la creación de enlaces simbólicos para iconos del sistema
-    # ln -sf categories categories@2x
-    # ln -sf devices devices@2x
-    # ln -sf emblems emblems@2x
-    # ln -sf mimetypes mimetypes@2x
-    # ln -sf places places@2x
-    # ln -sf status status@2x
-  )
 
   gtk-update-icon-cache "${THEME_DIR}"
 }
 
-# Modificar la función colors_folder() para solo aplicar colores a los iconos de aplicaciones
 colors_folder() {
   case "$theme" in
     '')
@@ -335,7 +269,176 @@ colors_folder() {
   fi
 }
 
-# Modificar la función install_theme() para solo instalar iconos de aplicaciones
+while [[ "$#" -gt 0 ]]; do
+  case "${1:-}" in
+    -d|--dest)
+      dest="$2"
+      mkdir -p "$dest"
+      shift 2
+      ;;
+    -n|--name)
+      name="${2}"
+      shift 2
+      ;;
+    -r|--remove|-u|--uninstall)
+      remove='true'
+      echo -e "\nUninstall icon themes...\n"
+      shift
+      ;;
+    -notint|--notint)
+      notint='true'
+      echo -e "\nInstall notint version! that folders will not follow system colorschemes..."
+      shift
+      ;;
+    -s|--scheme)
+      shift
+      for scheme in "${@}"; do
+        case "${scheme}" in
+          default)
+            schemes+=("${SCHEME_VARIANTS[0]}")
+            shift
+            ;;
+          nord)
+            schemes+=("${SCHEME_VARIANTS[1]}")
+            echo -e "\nNord ColorScheme version! ...\n"
+            shift
+            ;;
+          dracula)
+            schemes+=("${SCHEME_VARIANTS[2]}")
+            echo -e "\nDracula ColorScheme version! ...\n"
+            shift
+            ;;
+          gruvbox)
+            schemes+=("${SCHEME_VARIANTS[3]}")
+            echo -e "\nGruvbox ColorScheme version! ...\n"
+            shift
+            ;;
+          everforest)
+            schemes+=("${SCHEME_VARIANTS[4]}")
+            echo -e "\nEverforest ColorScheme version! ...\n"
+            shift
+            ;;
+          catppuccin)
+            schemes+=("${SCHEME_VARIANTS[5]}")
+            echo -e "\nCatppuccin ColorScheme version! ...\n"
+            shift
+            ;;
+          all)
+            schemes+=("${SCHEME_VARIANTS[@]}")
+            echo -e "\All ColorSchemes version! ...\n"
+            shift
+            ;;
+          -*|--*)
+            break
+            ;;
+          *)
+            echo "ERROR: Unrecognized color schemes variant '$1'."
+            echo "Try '$0 --help' for more information."
+            exit 1
+            ;;
+        esac
+      done
+      ;;
+    -t|--theme)
+      shift
+      for theme in "${@}"; do
+        case "${theme}" in
+          default)
+            themes+=("${THEME_VARIANTS[0]}")
+            shift
+            ;;
+          purple)
+            themes+=("${THEME_VARIANTS[1]}")
+            shift
+            ;;
+          pink)
+            themes+=("${THEME_VARIANTS[2]}")
+            shift
+            ;;
+          red)
+            themes+=("${THEME_VARIANTS[3]}")
+            shift
+            ;;
+          orange)
+            themes+=("${THEME_VARIANTS[4]}")
+            shift
+            ;;
+          yellow)
+            themes+=("${THEME_VARIANTS[5]}")
+            shift
+            ;;
+          green)
+            themes+=("${THEME_VARIANTS[6]}")
+            shift
+            ;;
+          teal)
+            themes+=("${THEME_VARIANTS[7]}")
+            shift
+            ;;
+          grey)
+            themes+=("${THEME_VARIANTS[8]}")
+            shift
+            ;;
+          all)
+            themes+=("${THEME_VARIANTS[@]}")
+            shift
+            ;;
+          -*|--*)
+            break
+            ;;
+          *)
+            echo "ERROR: Unrecognized theme color variant '$1'."
+            echo "Try '$0 --help' for more information."
+            exit 1
+            ;;
+        esac
+      done
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "ERROR: Unrecognized installation option '$1'."
+      echo "Try '$0 --help' for more information."
+      exit 1
+      ;;
+  esac
+done
+
+if [[ "${#themes[@]}" -eq 0 ]]; then
+  themes=("${THEME_VARIANTS[0]}")
+fi
+
+if [[ "${#schemes[@]}" -eq 0 ]]; then
+  schemes=("${SCHEME_VARIANTS[0]}")
+fi
+
+if [[ "${#colors[@]}" -eq 0 ]]; then
+  colors=("${COLOR_VARIANTS[@]}")
+fi
+
+clean_old_theme() {
+  for theme in '' '-purple' '-pink' '-red' '-orange' '-yellow' '-green' '-teal' '-grey'; do
+    for scheme in '' '-nord' '-dracula'; do
+      for color in '' '-light' '-dark'; do
+        rm -rf "${dest:-${DEST_DIR}}/${THEME_NAME}${theme}${scheme}${color}"
+      done
+    done
+  done
+}
+
+remove_theme() {
+  for theme in "${THEME_VARIANTS[@]}"; do
+    for scheme in "${SCHEME_VARIANTS[@]}"; do
+      for color in "${COLOR_VARIANTS[@]}"; do
+        local THEME_DIR="${DEST_DIR}/${THEME_NAME}${theme}${scheme}${color}"
+        [[ -d "$THEME_DIR" ]] && echo -e "Removing $THEME_DIR ..." && rm -rf "$THEME_DIR"
+      done
+    done
+  done
+}
+
 install_theme() {
   for theme in "${themes[@]}"; do
     for scheme in "${schemes[@]}"; do
@@ -346,9 +449,6 @@ install_theme() {
   done
 }
 
-# Mantener las funciones remove_theme() y clean_old_theme() sin cambios
-
-# Ejecutar las funciones correspondientes
 clean_old_theme
 
 if [[ "${remove}" == 'true' ]]; then
